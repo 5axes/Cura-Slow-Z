@@ -95,7 +95,28 @@ class SlowZ(Extension):
                 container._definition_cache[setting_key] = definition
                 container._updateRelations(definition)
 
+    def is_begin_layer_line(line: str) -> bool:
+        """Check if current line is the start of a layer section.
 
+        Args:
+            line (str): Gcode line
+
+        Returns:
+            bool: True if the line is the start of a layer section
+        """
+        return line.startswith(";LAYER:")
+      
+    def is_z_line(line: str) -> bool:
+        """Check if current line is a Z line
+
+        Args:
+            line (str): Gcode line
+
+        Returns:
+            bool: True if the line is a Z line segment
+        """
+        return "G0" in line and "Z" in line and not "E" in line
+    
     def _filterGcode(self, output_device):
         scene = self._application.getController().getScene()
 
@@ -122,11 +143,13 @@ class SlowZ(Extension):
             if len(gcode_list) < 2:
                 Logger.log("w", "G-Code %s does not contain any layers", plate_id)
                 continue
+            
             if ";SLOWZ\n" not in gcode_list[0]:
                 layercount=0
                 currentlayer=0
+                currentz=0
+                idl=0
                 if ";LAYER_COUNT:" in gcode_list[1]:
-                    layercount=int(gcode_list[1][13:])
                     if ";LAYER:0\n" in gcode_list[1]:
                         # layer 0 somehow got appended to the start gcode chunk
                         # left this in as it appears to be preventative for an error.
@@ -135,7 +158,7 @@ class SlowZ(Extension):
                         gcode_list.insert(2, ";LAYER:0\n" + chunks[1])
                         currentz=0
                         idl=1
-
+                        
                     #finding layercount                    
                     flines = gcode_list[1].split("\n")
                     Logger.log("w", "gcode_list %d", len(gcode_list))
@@ -155,6 +178,18 @@ class SlowZ(Extension):
                                 #Logger.log("w", "LAYER %s", line[7:])
                                 lines.insert(2,"M220 S" + str(speed_value))
                                 continue
+                                
+                            if idl == 1 and currentz >= slowz_height:
+                                idl=2
+                                startlayer=currentlayer
+                                # Logger.log("w", "Z Height %f", currentz)                               
+                                
+                            if idl == 1 and is_z_line(line):
+                                searchZ = re.search(r"Z(\d*\.?\d*)", line)
+                                if searchZ:
+                                    currentz=float(searchZ.group(1))
+                                    # Logger.log('d', 'Current Z     : {:f}'.format(currentz))
+                        
                         gcode_list[i] = "\n".join(lines)
                     gcode_list[0] += ";SLOWZ\n"
                     gcode_dict[plate_id] = gcode_list
