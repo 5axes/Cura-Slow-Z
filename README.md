@@ -10,3 +10,11 @@ The SlowZ setting can be found in the Custom print setup by using the Search fie
 
 ***WARNING***
 This will override any manual speed adjustments you make, so if you decide during the print to adjust it.  The gcode is set for each layer to set the speed so it will go back to the percentage it calculates on the next layer.
+
+## Options
+
+        **Slow Z percentage** : Positive value to slow the print as the z value rises up to this percentage.
+        **Slow Z height** : Positive value to define the start height of the speed reduction.
+        **Enable Slow Z** : Activate Slow Z instruction via M220 GCode.
+
+![Speed Option](./images/speed.png)
