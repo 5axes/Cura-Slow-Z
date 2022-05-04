@@ -4,7 +4,7 @@ This plugin adds a setting named "Z Percentage" to the speed settings in the Cus
 
 The SlowZ setting can be found in the Custom print setup by using the Search field on top of the settings. If you want to make the setting permanently visible in the sidebar, right click and select "Keep this setting visible".
 
-![Option](./images/option.png)
+![Option](./images/options.png)
 
 **This plugin assumes M220 will work with your printer.**
 
