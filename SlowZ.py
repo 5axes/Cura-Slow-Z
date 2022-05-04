@@ -53,6 +53,15 @@ class SlowZ(Extension):
         self._i18n_catalog = None
 
         self._settings_dict = OrderedDict()
+        self._settings_dict["slowz_enable"] = {
+            "label": "Enable Slow Z",
+            "description": "Activate Slow Z.",
+            "type": "bool",
+            "default_value": False,
+            "settable_per_mesh": False,
+            "settable_per_extruder": False,
+            "settable_per_meshgroup": False
+        }
         self._settings_dict["slowz_percentage"] = {
             "label": "Slow Z percentage",
             "description": "Positive value to slow the print as the z value rises up to this percentage.",
@@ -61,7 +70,7 @@ class SlowZ(Extension):
             "default_value": 0,
             "minimum_value": "0",
             "maximum_value_warning": "50",
-            "resolve": "",
+            "enabled": "slowz_enable",
             "settable_per_mesh": False,
             "settable_per_extruder": False,
             "settable_per_meshgroup": False
@@ -71,17 +80,9 @@ class SlowZ(Extension):
             "description": "Positive value to define the start height of the speed reduction.",
             "type": "float",
             "unit": "mm",
-            "default_value": 50,
+            "default_value": 0,
             "minimum_value": "0",
-            "settable_per_mesh": False,
-            "settable_per_extruder": False,
-            "settable_per_meshgroup": False
-        }
-        self._settings_dict["slowz_enable"] = {
-            "label": "Enable Slow Z",
-            "description": "Activate Slow Z.",
-            "type": "bool",
-            "default_value": False,
+            "enabled": "slowz_enable",
             "settable_per_mesh": False,
             "settable_per_extruder": False,
             "settable_per_meshgroup": False
@@ -111,9 +112,10 @@ class SlowZ(Extension):
             return
 
         speed_category = container.findDefinitions(key="speed")
-        slowz_percentage = container.findDefinitions(key=list(self._settings_dict.keys())[0])
-        slowz_height = container.findDefinitions(key=list(self._settings_dict.keys())[1])
-        slowz_enable = container.findDefinitions(key=list(self._settings_dict.keys())[2])
+        slowz_enable = container.findDefinitions(key=list(self._settings_dict.keys())[0])
+        slowz_percentage = container.findDefinitions(key=list(self._settings_dict.keys())[1])
+        slowz_height = container.findDefinitions(key=list(self._settings_dict.keys())[2])
+        
         
         if speed_category and not slowz_percentage:            
             speed_category = speed_category[0]
