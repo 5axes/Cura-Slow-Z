@@ -22,6 +22,28 @@ from UM.Settings.DefinitionContainer import DefinitionContainer
 from UM.Settings.ContainerRegistry import ContainerRegistry
 from UM.Logger import Logger
 
+def is_begin_layer_line(line: str) -> bool:
+    """Check if current line is the start of a layer section.
+
+    Args:
+        line (str): Gcode line
+
+    Returns:
+        bool: True if the line is the start of a layer section
+    """
+    return line.startswith(";LAYER:")
+  
+def is_z_line(line: str) -> bool:
+    """Check if current line is a Z line
+
+    Args:
+        line (str): Gcode line
+
+    Returns:
+        bool: True if the line is a Z line segment
+    """
+    return "G0" in line and "Z" in line and not "E" in line
+        
 class SlowZ(Extension):
     def __init__(self):
         super().__init__()
@@ -49,7 +71,7 @@ class SlowZ(Extension):
             "description": "Positive value to define the start height of the speed reduction.",
             "type": "float",
             "unit": "mm",
-            "default_value": 0,
+            "default_value": 9999,
             "minimum_value": "0",
             "settable_per_mesh": False,
             "settable_per_extruder": False,
@@ -94,28 +116,6 @@ class SlowZ(Extension):
                 speed_category._children.append(definition)
                 container._definition_cache[setting_key] = definition
                 container._updateRelations(definition)
-
-    def is_begin_layer_line(line: str) -> bool:
-        """Check if current line is the start of a layer section.
-
-        Args:
-            line (str): Gcode line
-
-        Returns:
-            bool: True if the line is the start of a layer section
-        """
-        return line.startswith(";LAYER:")
-      
-    def is_z_line(line: str) -> bool:
-        """Check if current line is a Z line
-
-        Args:
-            line (str): Gcode line
-
-        Returns:
-            bool: True if the line is a Z line segment
-        """
-        return "G0" in line and "Z" in line and not "E" in line
     
     def _filterGcode(self, output_device):
         scene = self._application.getController().getScene()
@@ -171,21 +171,21 @@ class SlowZ(Extension):
                         for (line_nr, line) in enumerate(lines):
                             if line.startswith(";LAYER:"):
                                 currentlayer=float(line[7:])
-                                #Logger.log("w", "LAYER %s", line[7:])
+                                Logger.log("w", "LAYER %s", line[7:])
                             
-                            if line.startswith(";LAYER:0"):
-                                currentz=0
-                                idl=1    
+                                if line.startswith(";LAYER:0"):
+                                    currentz=0
+                                    idl=1    
+                                    
+                                if idl == 1 and currentz >= slowz_height:
+                                    idl=2
+                                    startlayer=currentlayer
+                                    # Logger.log("w", "Z Height %f", currentz)                               
                                 
-                            if idl == 1 and currentz >= slowz_height:
-                                idl=2
-                                startlayer=currentlayer
-                                # Logger.log("w", "Z Height %f", currentz)                               
-                            
-                            if idl >= 2 :
-                                speed_value = 100 - int(float(slowz_percentage)*((currentlayer-startlayer)/(layercount-startlayer)))
-                                lines.insert(2,"M220 S" + str(speed_value))
-                                
+                                if idl >= 2 :
+                                    speed_value = 100 - int(float(slowz_percentage)*((currentlayer-startlayer)/(layercount-startlayer)))
+                                    lines.insert(2,"M220 S" + str(speed_value))
+                                    
                             if idl == 1 and is_z_line(line):
                                 searchZ = re.search(r"Z(\d*\.?\d*)", line)
                                 if searchZ:
