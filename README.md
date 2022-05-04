@@ -6,7 +6,7 @@ This plugin adds a setting named "Slow Z percentage" to the speed settings in th
 
 The height of the modification beginning is define by the setting named "Slow Z height". *Note : In the original plugin mentioned therefore the modification was automaticaly done at 50% of the print height.*
 
-The SlowZ setting can be found in the Custom print setup by using the Search field on top of the settings. If you want to make the setting permanently visible in the sidebar, right click and select "Keep this setting visible".
+The Slow Z settings can be found in the Custom print setup by using the Search field on top of the settings. If you want to make the setting permanently visible in the sidebar, right click and select "Keep this setting visible".
 
 ![Option](./images/options.png)
 
