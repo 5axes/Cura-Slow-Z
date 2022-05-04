@@ -1,5 +1,7 @@
+#------------------------------------------------------------------------------------------------------------------------------------
 # Initial Copyright (c) 2020 Shane Bumpurs c/o fieldOfView
-# Copyright (c) 2022 5@xes
+#
+# All modification after 2022 Copyright (c) 2022 5@xes
 #
 # Based on an existing Plugin https://github.com/VMaxx/SlowZ
 # The SlowZ is released under the terms of the AGPLv3 or higher.
@@ -10,6 +12,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------
 #
 #   Version 1.0 07/05/2022 Add slow down using M220 S(SlowDown%)
+#
 #------------------------------------------------------------------------------------------------------------------------------------
 
 import re
