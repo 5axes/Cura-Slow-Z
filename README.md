@@ -13,8 +13,8 @@ This will override any manual speed adjustments you make, so if you decide durin
 
 ## Options
 
-        **Slow Z percentage** : Positive value to slow the print as the z value rises up to this percentage.
-        **Slow Z height** : Positive value to define the start height of the speed reduction.
-        **Enable Slow Z** : Activate Slow Z instruction via M220 GCode.
+        Slow Z percentage : Positive value to slow the print as the z value rises up to this percentage.
+        Slow Z height : Positive value to define the start height of the speed reduction.
+        Enable Slow Z : Activate Slow Z instruction via M220 GCode.
 
 ![Speed Option](./images/speed.png)
