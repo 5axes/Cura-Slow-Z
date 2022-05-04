@@ -71,8 +71,17 @@ class SlowZ(Extension):
             "description": "Positive value to define the start height of the speed reduction.",
             "type": "float",
             "unit": "mm",
-            "default_value": 9999,
+            "default_value": 50,
             "minimum_value": "0",
+            "settable_per_mesh": False,
+            "settable_per_extruder": False,
+            "settable_per_meshgroup": False
+        }
+        self._settings_dict["slowz_enable"] = {
+            "label": "Enable Slow Z",
+            "description": "Activate Slow Z.",
+            "type": "bool",
+            "default_value": False,
             "settable_per_mesh": False,
             "settable_per_extruder": False,
             "settable_per_meshgroup": False
@@ -104,6 +113,7 @@ class SlowZ(Extension):
         speed_category = container.findDefinitions(key="speed")
         slowz_percentage = container.findDefinitions(key=list(self._settings_dict.keys())[0])
         slowz_height = container.findDefinitions(key=list(self._settings_dict.keys())[1])
+        slowz_enable = container.findDefinitions(key=list(self._settings_dict.keys())[2])
         
         if speed_category and not slowz_percentage:            
             speed_category = speed_category[0]
@@ -127,8 +137,14 @@ class SlowZ(Extension):
         # get setting from Cura
         slowz_percentage = global_container_stack.getProperty("slowz_percentage", "value")
         slowz_height = global_container_stack.getProperty("slowz_height", "value")
+        slowz_enable = global_container_stack.getProperty("slowz_enable", "value")
+        
         if slowz_percentage <= 0:
             return
+
+        if not slowz_enable:
+            return        
+        
         
         gcode_dict = getattr(scene, "gcode_dict", {})
         if not gcode_dict: # this also checks for an empty dict
