@@ -156,8 +156,6 @@ class SlowZ(Extension):
                         chunks = gcode_list[1].split(";LAYER:0\n")
                         gcode_list[1] = chunks[0]
                         gcode_list.insert(2, ";LAYER:0\n" + chunks[1])
-                        currentz=0
-                        idl=1
                         
                     #finding layercount                    
                     flines = gcode_list[1].split("\n")
@@ -173,16 +171,20 @@ class SlowZ(Extension):
                         for (line_nr, line) in enumerate(lines):
                             if line.startswith(";LAYER:"):
                                 currentlayer=float(line[7:])
-                                #speed_value = 100 - int(float(slowz_percentage)*(currentlayer/layercount))
-                                speed_value = 100 - int(float(slowz_percentage)*((currentlayer-startlayer)/(layercount-startlayer)))
                                 #Logger.log("w", "LAYER %s", line[7:])
-                                lines.insert(2,"M220 S" + str(speed_value))
-                                continue
+                            
+                            if line.startswith(";LAYER:0"):
+                                currentz=0
+                                idl=1    
                                 
                             if idl == 1 and currentz >= slowz_height:
                                 idl=2
                                 startlayer=currentlayer
                                 # Logger.log("w", "Z Height %f", currentz)                               
+                            
+                            if idl >= 2 :
+                                speed_value = 100 - int(float(slowz_percentage)*((currentlayer-startlayer)/(layercount-startlayer)))
+                                lines.insert(2,"M220 S" + str(speed_value))
                                 
                             if idl == 1 and is_z_line(line):
                                 searchZ = re.search(r"Z(\d*\.?\d*)", line)
