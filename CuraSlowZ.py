@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------
-# Initial Copyright (c) 2020 Shane Bumpurs c/o fieldOfView
+# Initial Copyright(c) 2020 Shane Bumpurs  (VMaxx ?)
 #
-# All modification after 2022 Copyright (c) 2022 5@xes
+# All modification after 05/2022 Copyright(c) 2022 5@xes
 #
 # Based on an existing Plugin https://github.com/VMaxx/SlowZ
 # The SlowZ is released under the terms of the AGPLv3 or higher.
@@ -12,6 +12,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------
 #
 #   Version 1.0.0  07/05/2022 Add slow down using M220 S(SlowDown%)
+#   Version 1.0.1  23/05/2022 Add more infos
 #   Version 1.0.2  27/05/2022 Change to CuraSlowZ
 #
 #------------------------------------------------------------------------------------------------------------------------------------
@@ -191,7 +192,7 @@ class CuraSlowZ(Extension):
                     for i in range(len(gcode_list)):                    
                         lines = gcode_list[i].split("\n")
                         for (line_nr, line) in enumerate(lines):
-                            if line.startswith(";LAYER:"):
+                            if is_begin_layer_line(line):
                                 currentlayer=float(line[7:])
                                 Logger.log("w", "LAYER %s", line[7:])
                             
