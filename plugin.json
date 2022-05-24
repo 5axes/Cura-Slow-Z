@@ -1,5 +1,5 @@
 {
-    "name": "SlowZ",
+    "name": "CuraSlowZ",
     "author": "5@xes",
     "version": "1.0.1",
     "description": "Adds a percentage to slow the printer as Z rises",
