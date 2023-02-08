@@ -185,14 +185,14 @@ class CuraSlowZ(Extension):
                         if fline.startswith(";LAYER_COUNT:"):
                             Logger.log("w", "found LAYER_COUNT %s", fline[13:])
                             layercount=float(fline[13:])
-                    Logger.log("w", "layercount %f", layercount)
-                    #go through each layer
+                    # Logger.log("w", "layercount %f", layercount)
+                    # go through each layer
                     for i in range(len(gcode_list)):                    
                         lines = gcode_list[i].split("\n")
                         for (line_nr, line) in enumerate(lines):
                             if line.startswith(";LAYER:"):
                                 currentlayer=float(line[7:])
-                                Logger.log("w", "LAYER %s", line[7:])
+                                # Logger.log("w", "LAYER %s", line[7:])
                             
                                 if line.startswith(";LAYER:0"):
                                     currentz=0
